@@ -19,7 +19,7 @@ $ ansible-playbook -i hosts -k -K cicd.yaml
 ```
 Once the playbook has completed there will be 2 Git repos on the CICD server. 
 
-Log into the Jenkins servers WebUI https://<ip-addr> and select 'Credentials'. You will see a list of existing Credentials. Under to Domain, click on one of the '(global)' links and then on 'Add Credentials'
+Log into the Jenkins servers WebUI https://192.168.50.30 and select 'Credentials'. You will see a list of existing Credentials. Under to Domain, click on one of the '(global)' links and then on 'Add Credentials'
 
 You will now need to create an account for Jenkins to access your newly created Git repoes. Under 'Kind' select 'SSH Username with Private Key'. For username use 'git-proj1app'. For 'Private Key', select 'Enter directly' and click on 'Add'. Open up your 'myKey' file and copy and paste the contents. Click on 'OK'. Repeat this process for 'git-proj1net'.
 
