@@ -15,6 +15,9 @@ $ mkdir keys
 $ cd keys
 $ ssh-keygen -f myKey
 $ ssh-add myKey
+$ python3 -m venv .
+$ source bin/activate
+$ pip3 install -r requirements.txt
 $ ansible-playbook -i hosts -k -K cicd.yaml
 ```
 Once the playbook has completed there will be 2 Git repos on the CICD server. 
