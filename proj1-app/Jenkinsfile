@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    stages {
+        stage('Create Environment') {
+            steps {
+                sh '''
+                python3 -m venv ansible
+                source ansible/bin/activate
+                pip3 install -r requirements.txt
+                '''
+            }
+        }
+        stage('Ansible configuration for Dev') {
+            steps {
+                sh '''
+                source ansible/bin/activate
+                ansible-playbook -i Ansible-Wordpress/hosts-dev Ansible-Wordpress/wordpress.yml 
+                '''
+            }
+        }
+        stage('User prompt for Deployment') {
+            steps {
+                input "Deploy to prod? "
+            }
+        }
+        stage('Ansible configuration for Prod') {
+            steps {
+                sh '''
+                source ansible/bin/activate
+                ansible-playbook -i Ansible-Wordpress/hosts-prod Ansible-Wordpress/wordpress.yml 
+                '''
+            }
+        }
+    }
+}

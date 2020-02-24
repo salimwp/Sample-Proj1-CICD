@@ -1,0 +1,71 @@
+---
+
+- name: Create git-proj1app
+  user:
+    name: git-proj1app
+    shell: /bin/git-shell
+    home: /srv/git-proj1app
+
+- name: Copying ssh keys
+  authorized_key:
+    user: git-proj1app
+    state: present
+    key: "{{ lookup('file', 'keys/myKey.pub') }}"
+
+- name: Fixing SELinux context to .ssh
+  sefcontext:
+    target: "/srv/git-proj1app/.ssh(/.*)?"
+    setype: ssh_home_t
+    state: present
+
+- name: Applying SELinux context
+  command: restorecon -irv /srv/git-proj1app
+
+- name: Initializing git-proj1app repo
+  command: 
+    cmd: git init --bare /srv/git-proj1app/proj1app.git
+    creates: /srv/git-proj1app/proj1app.git/description
+  become_user: git-proj1app
+
+- name: Transferring post-receive file
+  copy:
+    src: post-receive-app
+    dest: /srv/git-proj1app/proj1app.git/hooks/post-receive
+    owner: git-proj1app
+    group: git-proj1app
+    mode: 0755
+  
+- name: Create git-proj1net
+  user:
+    name: git-proj1net
+    shell: /bin/git-shell
+    home: /srv/git-proj1net
+
+- name: Copying ssh keys
+  authorized_key:
+    user: git-proj1net
+    state: present
+    key: "{{ lookup('file', 'keys/myKey.pub') }}"
+
+- name: Fixing SELinux context to .ssh
+  sefcontext:
+    target: "/srv/git-proj1net/.ssh(/.*)?"
+    setype: ssh_home_t
+    state: present
+
+- name: Applying SELinux context
+  command: restorecon -irv /srv/git-proj1net
+
+- name: Initializing git-proj1net repo
+  command:
+    cmd: git init --bare /srv/git-proj1net/proj1net.git
+    creates: /srv/git-proj1net/proj1net.git/description
+  become_user: git-proj1net
+
+- name: Transferring post-receive file
+  copy:
+    src: post-receive-net
+    dest: /srv/git-proj1net/proj1net.git/hooks/post-receive
+    owner: git-proj1net
+    group: git-proj1net
+    mode: 0755

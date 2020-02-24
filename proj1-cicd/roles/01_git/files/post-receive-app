@@ -1,0 +1,2 @@
+#!/bin/bash
+curl -k --user <login>:<pass> https://192.168.50.30/job/proj1-app/build?token=<token>

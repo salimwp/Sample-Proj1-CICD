@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    stages {
+        stage('Create Environment') {
+            steps {
+                sh '''
+                python3 -m venv ansible
+                source ansible/bin/activate
+                pip3 install -r requirements.txt
+                '''
+            }
+        }
+        stage('Execute ansible playbook to create VLAN and Policies') {
+            steps{
+                withCredentials([string(credentialsId: 'ansible-secret', variable: 'passwd')]) {
+                    echo "> Running playbook"
+                    sh '''
+                    source ansible/bin/activate
+                    ansible-playbook ansible-fortigate/devprod.yaml --extra-vars "passwd=$passwd"
+                    '''
+                }
+            }
+        }
+        stage('Executing ansible playbook to create access to Wordpress') {
+            steps{
+                withCredentials([string(credentialsId: 'ansible-secret', variable: 'passwd')]) {
+                    sh '''
+                    source ansible/bin/activate
+                    ansible-playbook ansible-fortigate/app.yaml --extra-vars "passwd=$passwd"
+                    '''
+                }
+            }
+        }
+    }
+}
